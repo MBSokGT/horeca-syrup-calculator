@@ -1,4 +1,70 @@
 <!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#ffffff"><title>Калькулятор стоимости сиропа на порцию</title><style>
-:root{color-scheme:light;--paper:#ffffff;--ink:#292b2e;--muted:#6e7379;--red:#a51e32;--track:#e5e4e2;--line:#e5e1da;--serif:Georgia,'Times New Roman',serif;--sans:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--sans)}.widget{max-width:1120px;margin:auto;padding:clamp(26px,5vw,58px) clamp(22px,4vw,54px)}.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(290px,.95fr);gap:clamp(38px,7vw,88px);align-items:start}.controls{display:grid;gap:24px}.field{display:grid;gap:9px}.head{display:flex;justify-content:space-between;align-items:baseline}.head label{font-size:17px;font-weight:550}.unit,.small{font-size:12px;color:var(--muted)}.value{width:100%;max-width:270px;padding:0;border:0;border-bottom:1px solid transparent;background:none;color:var(--red);font:500 clamp(40px,6vw,58px)/1.08 var(--serif);letter-spacing:-.035em;outline:none}.value:focus{border-color:var(--red)}input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{appearance:none}.range{width:100%;height:24px;margin:0;appearance:none;background:none;cursor:pointer;--fill:25%}.range::-webkit-slider-runnable-track{height:8px;border-radius:99px;background:linear-gradient(90deg,var(--red) 0 var(--fill),var(--track) var(--fill) 100%);border:1px solid white}.range::-moz-range-track{height:8px;border-radius:99px;background:var(--track);border:1px solid white}.range::-moz-range-progress{height:8px;border-radius:99px;background:var(--red)}.range::-webkit-slider-thumb{appearance:none;width:27px;height:27px;border-radius:50%;margin-top:-10px;background:#fffefa;border:1px solid #e6e1da;box-shadow:0 1px 5px #17191b24}.range::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fffefa;border:1px solid #e6e1da;box-shadow:0 1px 5px #17191b24}.range:focus-visible{outline:2px solid var(--red);outline-offset:4px}.result{padding-top:2px}.label{font-size:18px;color:var(--muted);font-weight:520;max-width:410px}.cost{display:block;margin:24px 0 20px;color:var(--red);font:500 clamp(50px,7vw,68px)/1 var(--serif);letter-spacing:-.04em}.formula{color:var(--muted);font-size:15px;max-width:470px}.servings{margin:22px 0 0;color:var(--muted)}.servings strong{color:var(--ink)}.foot{margin:23px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:#7b7e82}.reset{margin-top:21px;border:0;border-bottom:1px solid #9b9b98;padding:2px 0;background:none;color:#65696c;font:inherit;font-size:12px;cursor:pointer}.reset:hover{color:var(--red)}@media(max-width:700px){.widget{padding:25px 22px 30px}.layout{grid-template-columns:1fr;gap:32px}.controls{gap:19px}.value{font-size:44px}.result{border-top:1px solid var(--line);padding-top:23px}.label{font-size:16px}.cost{margin:14px 0;font-size:54px}.formula,.servings{font-size:14px}}
-</style></head><body><main class="widget" id="widget"><div class="layout"><form class="controls" onsubmit="return false" aria-label="Параметры расчёта"><div class="field"><div class="head"><label for="price">Цена бутылки</label><span class="unit">₽</span></div><input class="value" id="price" type="number" min="1" max="100000" step="1" value="520" inputmode="decimal"><input class="range" id="priceRange" type="range" min="100" max="3000" step="10" value="520" aria-label="Цена бутылки"></div><div class="field"><div class="head"><label for="volume">Объём бутылки</label><span class="unit">мл</span></div><input class="value" id="volume" type="number" min="1" max="10000" step="1" value="1000" inputmode="decimal"><input class="range" id="volumeRange" type="range" min="250" max="2000" step="50" value="1000" aria-label="Объём бутылки"></div><div class="field"><div class="head"><label for="dose">Дозировка на порцию</label><span class="unit">мл</span></div><input class="value" id="dose" type="number" min="0.1" max="1000" step="0.5" value="25" inputmode="decimal"><input class="range" id="doseRange" type="range" min="5" max="100" step="1" value="25" aria-label="Дозировка на порцию"></div></form><section class="result" aria-live="polite"><div class="label">Оценочная стоимость сиропа на порцию</div><output class="cost" id="cost">13 ₽</output><div class="formula">Цена бутылки ÷ (объём бутылки ÷ дозировка)</div><p class="servings" id="servings">При этих условиях из бутылки получится около <strong>40 порций</strong>.</p><p class="foot">В расчёте только сироп. Не учтены молоко, кофе, другие ингредиенты, труд, потери и списания. Используйте подтверждённые данные клиента.</p></section></div></main><script>(()=>{const fields={price:{num:document.getElementById('price'),range:document.getElementById('priceRange')},volume:{num:document.getElementById('volume'),range:document.getElementById('volumeRange')},dose:{num:document.getElementById('dose'),range:document.getElementById('doseRange')}};const fmt=n=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(n);function calc(){const vals={};for(const[k,f]of Object.entries(fields)){vals[k]=Number(f.num.value);const v=Math.max(Number(f.range.min),Math.min(Number(f.range.max),vals[k]));f.range.value=Number.isFinite(v)?v:f.range.min;const span=Number(f.range.max)-Number(f.range.min);f.range.style.setProperty('--fill',(span?((Number(f.range.value)-Number(f.range.min))/span*100):0)+'%')}const{price,volume,dose}=vals;if(!price||!volume||!dose||Object.values(vals).some(n=>!Number.isFinite(n)||n<=0)){document.getElementById('cost').textContent='—';document.getElementById('servings').textContent='Введите значения больше нуля.';return}const portions=volume/dose;document.getElementById('cost').textContent=fmt(price/portions)+' ₽';document.getElementById('servings').innerHTML='При этих условиях из бутылки получится около <strong>'+fmt(portions)+' порций</strong>.';parent.postMessage({type:'syrup-calculator-resize',height:document.documentElement.scrollHeight},'*')}for(const f of Object.values(fields)){f.num.addEventListener('input',()=>{f.range.value=f.num.value;calc()});f.range.addEventListener('input',()=>{f.num.value=f.range.value;calc()})}new ResizeObserver(calc).observe(document.body);calc()})();</script></body></html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Калькулятор порции</title><style>:root{color-scheme:light;--red:#b91924;--ink:#242527;--muted:#62656a;--line:#ded8d0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;font-size:16px;line-height:1.5}
+.calculator-widget{max-width:1120px;margin:auto;padding:24px 28px}
+.calculator h3{font-size:clamp(25px,3vw,34px);line-height:1.2;margin:0 0 26px;font-weight:700;letter-spacing:-.02em}
+.calc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.calc-grid fieldset{min-width:0;margin:0;border:1px solid var(--line);padding:14px 18px 18px}
+.calc-grid legend{padding:0 7px;color:var(--red);font-size:19px;font-weight:700}
+.calc-grid label{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0;font-size:15px}
+input{font:inherit;color:var(--ink);border:1px solid #bcb8b3;border-radius:0;background:#fff;padding:10px 11px;min-width:0}
+.calc-grid input{width:110px;max-width:48%}
+input:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.calc-context{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:20px 0}
+.calc-context label{display:block;margin:0;font-size:14px}
+.calc-context input{display:block;width:100%;max-width:none;margin-top:8px}
+.calc-result{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);margin-top:22px}
+.calc-result>div{padding:16px 18px;border-right:1px solid var(--line)}
+.calc-result>div:last-child{border-right:0}
+.calc-result small{display:block;font-size:13px;line-height:1.45;color:var(--muted)}
+.calc-result strong{display:block;margin-top:7px;font-size:30px;line-height:1.25;font-weight:700;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.calc-costs{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:12px}
+.calc-costs strong{font-size:25px}
+.calc-error{font-size:14px;color:var(--red);margin:16px 0 0}
+[hidden]{display:none!important}
+@media(max-width:700px){.calculator-widget{padding:20px}.calc-context{grid-template-columns:repeat(2,minmax(0,1fr))}.calc-grid{gap:14px}.calc-grid label{font-size:14px}.calc-grid fieldset{padding:10px 12px 14px}.calc-result>div{padding:13px}.calc-result strong{font-size:26px}}
+@media(max-width:500px){.calc-grid:not(.calc-context){grid-template-columns:1fr}.calc-result{grid-template-columns:1fr}.calc-result>div{border-right:0;border-bottom:1px solid var(--line)}.calc-result>div:last-child{border-bottom:0}.calc-result strong{font-size:28px}.calc-result small{font-size:13px}.calculator-widget{padding:18px}.calculator h3{font-size:26px;margin-bottom:20px}}
+</style></head>
+<body><main class="calculator-widget">
+<div class="calculator" id="syrupCalculator"><h3>Калькулятор порции</h3>
+    <div class="calc-grid"><fieldset><legend>Наш сироп</legend><label>Цена бутылки, ₽ <input id="newPrice" type="number" min="0" step="0.01" value="520" inputmode="decimal"></label><label>Объём, мл <input id="newVolume" type="number" min="1" step="1" value="1000" inputmode="numeric"></label><label>На порцию, мл <input id="newDose" type="number" min="0.1" step="0.1" value="25" inputmode="decimal"></label></fieldset><fieldset><legend>Другой сироп</legend><label>Цена бутылки, ₽ <input id="oldPrice" type="number" min="0" step="0.01" value="560" inputmode="decimal"></label><label>Объём, мл <input id="oldVolume" type="number" min="1" step="1" value="1000" inputmode="numeric"></label><label>На порцию, мл <input id="oldDose" type="number" min="0.1" step="0.1" value="25" inputmode="decimal"></label></fieldset></div>
+    <div class="calc-grid calc-context"><label>Напитков в месяц <input id="monthlyServings" type="number" min="0" step="1" value="300" inputmode="numeric"></label><label>Цена напитка, ₽ <input id="drinkPrice" type="number" min="0.01" step="0.01" value="250" inputmode="decimal"></label><label>Остальные ингредиенты, ₽ <input id="otherCost" type="number" min="0" step="0.01" value="57" inputmode="decimal"></label><label>Потери на напиток, ₽ <input id="wasteCost" type="number" min="0" step="0.01" value="5" inputmode="decimal"></label></div>
+    <div class="calc-result" aria-live="polite"><div><small>Наш сироп / порция</small><strong id="newUnitCost">13 ₽</strong></div><div><small>Другой сироп / порция</small><strong id="oldUnitCost">14 ₽</strong></div><div><small>Разница за месяц</small><strong id="monthlyDifference">300 ₽</strong></div></div><div class="calc-result calc-costs" aria-live="polite"><div><small>С нашим сиропом: ингредиенты и потери / напиток</small><strong id="ingredientsCost">75 ₽</strong></div><div><small>Доля этих затрат в цене напитка</small><strong id="ingredientsShare">30%</strong></div></div><p id="calculatorError" class="calc-error" role="status" hidden></p>
+  </div></main><script>const calculator = document.getElementById('syrupCalculator');
+if (calculator) {
+  const ids = ['newPrice', 'newVolume', 'newDose', 'oldPrice', 'oldVolume', 'oldDose', 'monthlyServings', 'drinkPrice', 'otherCost', 'wasteCost'];
+  const inputs = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
+  const money = value => {
+    const rounded = Math.round((value + Number.EPSILON) * 100) / 100;
+    return new Intl.NumberFormat('ru-RU', {maximumFractionDigits: 2, minimumFractionDigits: Number.isInteger(rounded) ? 0 : 2}).format(rounded) + ' ₽';
+  };
+  function calculate() {
+    const value = Object.fromEntries(ids.map(id => [id, Number(String(inputs[id].value).replace(',', '.'))]));
+    const invalid = ids.some(id => inputs[id].value.trim() === '' || !Number.isFinite(value[id]) || value[id] < 0)
+      || value.newVolume <= 0 || value.oldVolume <= 0 || value.newDose <= 0 || value.oldDose <= 0 || value.drinkPrice <= 0;
+    const error = document.getElementById('calculatorError');
+    if (invalid) {
+      ['newUnitCost', 'oldUnitCost', 'monthlyDifference', 'ingredientsCost', 'ingredientsShare'].forEach(id => document.getElementById(id).textContent = '—');
+      error.textContent = 'Введите объём, дозировку и цену напитка больше нуля. Остальные значения могут быть нулевыми.';
+      error.hidden = false;
+      return;
+    }
+    error.hidden = true;
+    error.textContent = '';
+    const newCost = value.newPrice * value.newDose / value.newVolume;
+    const oldCost = value.oldPrice * value.oldDose / value.oldVolume;
+    const difference = (oldCost - newCost) * value.monthlyServings;
+    const foodCost = newCost + value.otherCost + value.wasteCost;
+    document.getElementById('newUnitCost').textContent = money(newCost);
+    document.getElementById('oldUnitCost').textContent = money(oldCost);
+    document.getElementById('monthlyDifference').textContent = (difference < -0.005 ? '−' : difference > 0.005 ? '+' : '') + money(Math.abs(difference));
+    document.getElementById('ingredientsCost').textContent = money(foodCost);
+    document.getElementById('ingredientsShare').textContent = new Intl.NumberFormat('ru-RU', {maximumFractionDigits: 1}).format(foodCost / value.drinkPrice * 100) + '%';
+  }
+  Object.values(inputs).forEach(input => input.addEventListener('input', calculate));
+  calculate();
+}
+
+</script></body></html>
